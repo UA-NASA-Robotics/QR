@@ -14,15 +14,18 @@ args = vars(ap.parse_args())
 
 # load the input image
 image = cv2.imread(args["image"])
+#image = cv2.imread('../images/davidTest.jpg')
 
 # find the barcodes in the image and decode each of the barcodes
 barcodes = pyzbar.decode(image)
 
 # loop over the detected barcodes
 for barcode in barcodes:
+    print("found a barcode")
     # extract the bounding box location of the barcode and draw the
     # bounding box surrounding the barcode on the image
     (x, y, w, h) = barcode.rect
+    print(barcode.rect)
     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
     print([x, y, w, h])
     print(y+h)
@@ -38,5 +41,11 @@ for barcode in barcodes:
         0.5, (0, 0, 255), 2)
 
 # show the output image
-cv2.imshow("Image", image)
+#cv2.imshow("Image", image)
+
+cv2.namedWindow("output", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions
+                        # Read image
+imS = cv2.resize(image, (960, 540))                    # Resize image
+cv2.imshow("output", imS)      
+
 cv2.waitKey(0)
