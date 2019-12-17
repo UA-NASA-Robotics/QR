@@ -21,7 +21,7 @@ def draw(img, corners, imgpts):
     img = cv.line(img, corner, tuple(imgpts[2].ravel()), (0,0,255), 5)
     return img
 
-img = cv.imread('22.jpg')
+img = cv.imread('14.jpg')
 gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 ret, corners = cv.findChessboardCorners(gray, (9,6),None) #worked!
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -44,50 +44,12 @@ if ret == True:
         print('Roll: {:.2f}\nPitch: {:.2f}\nYaw: {:.2f}'.format(float(roll), float(pitch), float(yaw)))
         #print(-np.matrix(rotation_matrix).T * np.matrix(tvecs))
         print(cv.decomposeProjectionMatrix(pmat)[-1]) #another way to get Euler angles
-        # print("rotation matrix:")
-        # print(rotation_matrix)
-        # # yaw
-        # print("yaw:")
-        # print(math.atan(rotation_matrix[1][0]/rotation_matrix[0][0])*(180/math.pi))
-        # print("pitch:")
-        # print(math.atan(-rotation_matrix[2][0]/math.sqrt(rotation_matrix[2][1]**2 + rotation_matrix[2][2]**2))*(180/math.pi))
-        # print("roll:")
-        # print(math.atan(rotation_matrix[2][1]/rotation_matrix[2][2])*(180/math.pi))
-        # decompose camera matrix:
-        #cv.decomposeProjectionMatrix(projMatrix[mtx[, rotation_matrix[, tvecs]]])
-        # C = -R.transpose() * T
+        
         C = np.matmul(-rotation_matrix.transpose(), tvecs)
         # Orientation vector
         O = np.matmul(rotation_matrix.T, np.array([0, 0, 1]).T)
         camera_pose = C.squeeze()
         camera_orientation = O
-        # print("camera_pose:")
-        # print(camera_pose)
-        # print("camera_orientation:")
-        # print(camera_orientation)
-        # Decompose the camera coordinate
-        # arrow_length = camera_pose[2] * 0.8
-        # xs = [camera_pose[0], camera_pose[0] + camera_orientation[0] * arrow_length]
-        # # print("x points: ")
-        # # print(xs)
-        # ys = [camera_pose[1], camera_pose[1] + camera_orientation[1] * arrow_length]
-        # print("y points: ")
-        # print(ys)
-        # zs = [camera_pose[2], camera_pose[2] + camera_orientation[2] * arrow_length]
-        # print("z points: ")
-        # print(zs)
-        # print("Angle with respect to X,Y plane: ")
-        # y_diff = ys[0] - ys[1]
-        # x_diff = xs[0] - xs[1]
-        # z_diff = zs[0] - zs[1]
-        # angle = np.arctan((x_diff)/(z_diff))
-        # #angle = np.arctan((y_diff)/(x_diff))
-        # angle_degrees = angle * (180/math.pi)
-        # print(angle_degrees)
-        print("rvecs:")
-        print(rvecs)
-        print("tvecs:")
-        print(tvecs)
 
         # project 3D points to image plane
         imgpts, jac = cv.projectPoints(axis, rvecs, tvecs, mtx, dist)
